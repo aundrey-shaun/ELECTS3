@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      color: #e5e7eb;
+      padding: 20px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 500px;
+      background-color: #0b1220;
+      border-radius: 12px;
+      padding: 20px 22px 24px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 16px;
+      color: #f9fafb;
+    }
+
+    form {
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    #cityInput {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #4b5563;
+      font-size: 14px;
+      outline: none;
+      background-color: #020617;
+      color: #f9fafb;
+    }
+
+    #cityInput::placeholder {
+      color: #6b7280;
+    }
+
+    button[type="submit"] {
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: none;
+      background-color: #3b82f6;
+      color: #f9fafb;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #2563eb;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .message {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .message.info {
+      background-color: rgba(59, 130, 246, 0.15);
+      color: #bfdbfe;
+      border: 1px solid rgba(59, 130, 246, 0.4);
+    }
+
+    .message.error {
+      background-color: rgba(239, 68, 68, 0.15);
+      color: #fecaca;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .card {
+      margin-top: 10px;
+      padding: 14px 12px 12px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #020617, #111827);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .card-header h2 {
+      font-size: 18px;
+      color: #e5e7eb;
+    }
+
+    .card-header span {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+
+    .content {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .icon-temp {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 90px;
+    }
+
+    #weatherIcon {
+      width: 70px;
+      height: 70px;
+      image-rendering: -webkit-optimize-contrast;
+    }
+
+    #temperature {
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: -4px;
+    }
+
+    .details p {
+      font-size: 13px;
+      color: #d1d5db;
+      margin-bottom: 4px;
+    }
+
+    .details p:first-child {
+      font-weight: 600;
+      font-size: 14px;
+      color: #f9fafb;
+    }
+
+    @media (max-width: 480px) {
+      .content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .icon-temp {
+        flex-direction: row;
+        gap: 8px;
+      }
+      #temperature {
+        margin-top: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app">
+    <h1>Weather Dashboard</h1>
+
+    <!-- City input form -->
+    <form id="weatherForm">
+      <label for="cityInput">City Name</label>
+      <div class="input-row">
+        <input
+          type="text"
+          id="cityInput"
+          placeholder="e.g. Angeles City, Manila, Tokyo"
+        />
+        <button type="submit">Get Weather</button>
+      </div>
+      <small class="hint">Type a city and press Enter or click the button.</small>
+    </form>
+
+    <!-- Info / error messages -->
+    <div id="message" class="message hidden"></div>
+
+    <!-- Weather result card -->
+    <div id="weatherCard" class="card hidden">
+      <div class="card-header">
+        <h2 id="cityName"></h2>
+        <span id="countryCode"></span>
+      </div>
+      <div class="content">
+        <div class="icon-temp">
+          <img id="weatherIcon" alt="Weather icon" />
+          <div id="temperature"></div>
+        </div>
+        <div class="details">
+          <p id="condition"></p>
+          <p id="feelsLike"></p>
+          <p id="minMax"></p>
+          <p id="humidity"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery -->
+  <script
+    src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+    crossorigin="anonymous">
+  </script>
+
+  <script>
+    // Replace with your real OpenWeatherMap API key
+    const API_KEY = "00618cf9685f03778bf1c602f1bc1eac";
+
+    $(function () {
+      // Handle form submit
+      $("#weatherForm").on("submit", function (e) {
+        e.preventDefault();
+
+        const city = $.trim($("#cityInput").val());
+
+        if (!city) {
+          showMessage("Please enter a city name.", "error");
+          $("#weatherCard").addClass("hidden");
+          return;
+        }
+
+        // Show loading message
+        showMessage("Loading weather data...", "info");
+        $("#weatherCard").addClass("hidden");
+
+        // AJAX call to OpenWeatherMap API
+        $.ajax({
+          url: "https://api.openweathermap.org/data/2.5/weather",
+          method: "GET",
+          dataType: "json",
+          data: {
+            q: city,
+            appid: API_KEY,
+            units: "metric" // Celsius
+          },
+          success: function (data) {
+            // Parse JSON response
+            const cityName = data.name;
+            const country = data.sys && data.sys.country ? data.sys.country : "";
+            const temp = Math.round(data.main.temp);
+            const feels = Math.round(data.main.feels_like);
+            const min = Math.round(data.main.temp_min);
+            const max = Math.round(data.main.temp_max);
+            const humidity = data.main.humidity;
+            const condition = data.weather[0].description; // string
+            const iconCode = data.weather[0].icon;
+
+            // Update DOM
+            $("#cityName").text(cityName);
+            $("#countryCode").text(country ? "(" + country + ")" : "");
+            $("#temperature").text(temp + "°C");
+
+            // Capitalize first letter of condition
+            const niceCondition =
+              condition.charAt(0).toUpperCase() + condition.slice(1);
+            $("#condition").text(niceCondition);
+            $("#feelsLike").text("Feels like: " + feels + "°C");
+            $("#minMax").text("Min: " + min + "°C  ·  Max: " + max + "°C");
+            $("#humidity").text("Humidity: " + humidity + "%");
+
+            // Weather icon from OpenWeatherMap
+            const iconUrl =
+              "https://openweathermap.org/img/wn/" + iconCode + "@2x.png";
+            $("#weatherIcon").attr("src", iconUrl).attr("alt", niceCondition);
+
+            // Show card, clear message
+            $("#weatherCard").removeClass("hidden");
+            showMessage("", "clear");
+          },
+          error: function (xhr) {
+            // Handle errors: invalid city, network issue, etc.
+            if (xhr.status === 404) {
+              showMessage(
+                "City not found. Please check the spelling and try again.",
+                "error"
+              );
+            } else if (xhr.status === 401) {
+              showMessage(
+                "Invalid API key. Please check your OpenWeatherMap API key.",
+                "error"
+              );
+            } else {
+              showMessage(
+                "Unable to get weather data at the moment. Please try again later.",
+                "error"
+              );
+            }
+
+            $("#weatherCard").addClass("hidden");
+          }
+        });
+      });
+
+      // Helper: show info / error message
+      function showMessage(text, type) {
+        const $msg = $("#message");
+
+        if (!text || type === "clear") {
+          $msg.text("").addClass("hidden").removeClass("error info");
+          return;
+        }
+
+        $msg
+          .text(text)
+          .removeClass("hidden")
+          .removeClass("error info")
+          .addClass(type === "error" ? "error" : "info");
+      }
+    });
+  </script>
+</body>
+</html>
