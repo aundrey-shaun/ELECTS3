@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Table Activity</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Outer wrapper so table + button are centered */
+    .wrapper {
+      width: 100%;
+      max-width: 900px;
+      height: 80vh;              /* container height */
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;   /* vertical center */
+      align-items: center;       /* horizontal center */
+    }
+
+    .table-wrapper {
+      width: min(90vw, 700px);   /* responsive width with a max */
+      height: 70%;               /* table area = 70% of container height */
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+
+    /* Button above the table (styled link) */
+    .btn-link {
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+      padding: 14px 0;
+      margin-bottom: 20px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #ffffff;
+      background-color: #ff6b35;        /* normal color */
+      border-radius: 4px;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-link:hover {
+      background-color: #b33a1e;        /* dark color on hover */
+    }
+
+    /* Table styles */
+    table {
+      width: 100%;
+      height: 100%;
+      border-collapse: collapse;
+      background-color: #f5f5f5;
+    }
+
+    th, td {
+      border: 1px solid #777;
+      text-align: center;
+      padding: 1rem 0.5rem;
+      font-size: 0.9rem;
+      word-wrap: break-word;
+    }
+
+    thead th {
+      background-color: #2e7d32; /* green header bar like the sample */
+      color: #ffffff;
+      font-weight: bold;
+    }
+
+    /* First column (merged row) background */
+    .merged-row {
+      background-color: #eeeeee;
+      font-weight: bold;
+      width: 20%;
+    }
+
+    .merged-col {
+      background-color: #eeeeee;
+      font-weight: bold;
+    }
+
+    /* Small screens */
+    @media (max-width: 600px) {
+      th, td {
+        padding: 0.6rem 0.3rem;
+        font-size: 0.8rem;
+      }
+
+      .btn-link {
+        font-size: 1rem;
+        padding: 12px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="table-wrapper">
+
+      <!-- Button that opens ChatGPT in a new tab -->
+      <a class="btn-link" href="https://www.chatgpt.com" target="_blank">
+        Don't click me!
+      </a>
+
+      <!-- Table with merged cells -->
+      <table>
+        <thead>
+          <tr>
+            <!-- first three cells merged -->
+            <th colspan="3">Header 1</th>
+            <th>Header 2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <!-- first cell merged vertically across next 2 rows -->
+            <td class="merged-row" rowspan="2">Merged Row 1</td>
+            <td>Row 1, Cell 2</td>
+            <td>Row 1, Cell 3</td>
+            <td>Row 1, Cell 4</td>
+          </tr>
+          <tr>
+            <td>Row 2, Cell 2</td>
+            <td>Row 2, Cell 3</td>
+            <td>Row 2, Cell 4</td>
+          </tr>
+          <tr>
+            <td>Row 3, Cell 1</td>
+            <!-- second & third cells merged horizontally -->
+            <td class="merged-col" colspan="2">Merged Column 1</td>
+            <td>Row 3, Cell 4</td>
+          </tr>
+          <tr>
+            <td>Row 4, Cell 1</td>
+            <td>Row 4, Cell 2</td>
+            <td>Row 4, Cell 3</td>
+            <td>Row 4, Cell 4</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</body>
+</html>
