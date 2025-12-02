@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive To-Do List</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      padding: 20px 30px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    #addTaskBtn {
+      width: 100%;
+      padding: 10px 0;
+      margin: 10px 0 20px;
+      background-color: #e6e6e6;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    #addTaskBtn:hover {
+      background-color: #d4d4d4;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 5px;
+    }
+
+    th, td {
+      border: 1px solid #555;
+      padding: 8px;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background-color: #f5f5f5;
+      font-weight: bold;
+    }
+
+    .delete-btn {
+      padding: 4px 10px;
+      border: none;
+      border-radius: 2px;
+      background-color: #ff4d4d;
+      color: #fff;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .delete-btn:hover {
+      background-color: #d93636;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Interactive To-Do List</h1>
+
+  <!-- Task form -->
+  <form id="taskForm">
+    <div class="form-group">
+      <label for="taskName">Task Name:</label>
+      <input type="text" id="taskName" placeholder="Enter task name">
+    </div>
+
+    <div class="form-group">
+      <label for="taskDescription">Task Description:</label>
+      <textarea id="taskDescription" placeholder="Enter task description"></textarea>
+    </div>
+
+    <button type="submit" id="addTaskBtn">Add Task</button>
+  </form>
+
+  <!-- Tasks table -->
+  <table id="taskTable">
+    <thead>
+      <tr>
+        <th>Item No.</th>
+        <th>Task Name</th>
+        <th>Task Description</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Rows will be added here via jQuery -->
+    </tbody>
+  </table>
+
+  <!-- jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+          integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+          crossorigin="anonymous"></script>
+
+  <script>
+    // Run when the DOM is ready
+    $(document).ready(function () {
+
+      // Renumber all rows in the table (Item No. column)
+      function renumberRows() {
+        $('#taskTable tbody tr').each(function (index) {
+          // index starts at 0, so add 1 for display
+          $(this).find('.item-no').text(index + 1);
+        });
+      }
+
+      // Handle form submission (Add Task button)
+      $('#taskForm').on('submit', function (event) {
+        event.preventDefault(); // stop page reload
+
+        // Get and trim values
+        const name = $('#taskName').val().trim();
+        const description = $('#taskDescription').val().trim();
+
+        // Basic validation
+        if (name === '' || description === '') {
+          alert('Please fill out BOTH the task name and task description.');
+          return; // do not continue
+        }
+
+        // Create a new row
+        const $row = $('<tr></tr>');
+
+        // Item number cell (filled by renumberRows later)
+        const $itemNoCell = $('<td class="item-no"></td>');
+
+        // Task name and description cells (use .text() to avoid HTML injection)
+        const $nameCell = $('<td></td>').text(name);
+        const $descCell = $('<td></td>').text(description);
+
+        // Delete button cell
+        const $actionCell = $('<td></td>');
+        const $deleteBtn = $('<button class="delete-btn" type="button">Delete</button>');
+        $actionCell.append($deleteBtn);
+
+        // Append cells to the row
+        $row.append($itemNoCell, $nameCell, $descCell, $actionCell);
+
+        // Append row to table body
+        $('#taskTable tbody').append($row);
+
+        // Renumber all rows so Item No. is correct
+        renumberRows();
+
+        // Clear input fields for the next task
+        $('#taskName').val('');
+        $('#taskDescription').val('');
+        $('#taskName').focus();
+      });
+
+      // Handle delete clicks using event delegation
+      $('#taskTable').on('click', '.delete-btn', function () {
+        // Remove the row containing this button
+        $(this).closest('tr').remove();
+
+        // Renumber remaining rows
+        renumberRows();
+      });
+    });
+  </script>
+
+</body>
+</html>
